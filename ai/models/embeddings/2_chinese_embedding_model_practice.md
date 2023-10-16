@@ -43,7 +43,7 @@
 
 ### 通用参数
 
--   分割方式 Text Splitter
+-   分割方式 Text Splitter（Markdown Header，Recursive）
 -   分块大小 Chunk Size （以 token 数计算）
 -   分块上下文长度 Chunk Overlap（以 token 数计算，用于增加不同片段之间的联系）
 
@@ -67,15 +67,39 @@
 -   共 6 类任务：
 
     -   Classification 分类（9 数据集）：根据已有类别，归类输入文本
-    -   Clustering 聚类（4 数据集）：直接将输入文本分类
+        -   电商购物评价（正面/负面/中性）
+        -   APP分类（从介绍文本为APP分类）
+    -   Clustering 聚类（4 数据集）：将输入文本分类
+        -   例1："家电板块早盘表现强势" = 股票
+        -   例2："不执行阳光体育一小时部分学校将受罚" = 教育
     -   Pair Classification 句子对分类（2 数据集）：判断一对文本是否属于同一类（输出为是/否）
+        -   “身上裹一件工厂发的棉大衣,手插在袖筒里” + “身上至少一件衣服” = 1
+        -   "等他回来,我们就出去吃啊." + "我们在等他" = 1
+        -   "要狠抓造林质量不放松" + "种的树越多越好,至于成活率和质量并不需要考虑" = 0
+        -   "否则,我们的高要求得不到落实,也影响了我们的低目标的实现" + "我们的要求落实与否无所谓。" = 0
     -   Reranking 重排序（4 数据集）：根据输入，对文本集做相关性重排序
-    -   Retrieval 检索（8 数据集）：根据输入，检索文本集中相应文本
-    -   Semantic Textual Similarity - STS 文本语义相似度：（8 数据集）检测输入文本的相似度（输出为 0~1 之间的数值）
+        -   T2、MS MARCO（微软机器阅读理解数据集）、医疗问答
+    -   Retrieval 检索（8 数据集）：根据输入，检索相应文本
+        -   T2、MS MARCO、百度、新冠、医疗问答、电商、视频标题
+    -   Semantic Textual Similarity - STS 文本语义相似度：（8 数据集）检测输入文本的相似度（输出为 0~5 之间的数值）
+        -   “一架飞机要起飞了” + “一架飞机正在起飞” = 5
+        -   “一个人在拉大提琴” + “一个坐着的人正在拉大提琴” = 4
+        -   “一个人往锅里倒油” + “一个人把酒倒进锅里” = 3
+        -   “三个人在下棋” + “两个人在下棋” = 2
+        -   “一个人在切西红柿” + “一个人在切肉” = 1
+        -   “一个男人在跳舞” + "一个男人在说话" = 0
 
 -   使用方法：
 
     `pip install -U C_MTEB`
+
+    -   使用默认测试脚本：
+
+    ```sh
+    git clone https://github.com/FlagOpen/FlagEmbedding.git
+    cd FlagEmbedding/C_MTEB
+    python eval_C-MTEB.py --model_name_or_path shibing624/text2vec-base-chinese
+    ```
 
     -   使用 `sentense_transformer` 库：
 
@@ -245,7 +269,9 @@
     ```
 
     -   聚类任务（Clustering）：
-
+        -   参考：[聚类性能评估-V-Measure - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/145989213)
+    
+    
     ```json
     {
       "dataset_revision": null,
@@ -259,10 +285,10 @@
       }
     }
     ```
-
+    
     -   文本对分类（Pair Classification）：
         -   ap = 平均精确度 = Average Precision（越高越好）
-
+    
     ```json
     {
       "dataset_revision": null,
